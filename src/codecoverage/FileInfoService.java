@@ -31,6 +31,7 @@ public class FileInfoService{
 		for(int i=0; i < fileInfos.size(); i++){
 			FileInfo fileInfo = fileInfos.get(i);
 			try{
+				//parse testable files
 				InputStream fileInputStream = new FileInputStream(fileInfo.file);
 				ANTLRInputStream input = new ANTLRInputStream(fileInputStream);
 				CFSCRIPTLexer lexer = new CFSCRIPTLexer(input);
@@ -44,7 +45,21 @@ public class FileInfoService{
 				
 				fileInfo.functions = listener.functionNames;
 				
-				fileInfo.test();
+				fileInfo.populateTestFile();
+				//check if functions are being testing in test files
+				
+				InputStream testFileInputStream = new FileInputStream(fileInfo.testFile);
+				ANTLRInputStream testinput = new ANTLRInputStream(testFileInputStream);
+				CFSCRIPTLexer testLexer = new CFSCRIPTLexer(testinput);
+				CommonTokenStream testTokens = new CommonTokenStream(testLexer);
+				CFSCRIPTParser testParser = new CFSCRIPTParser(testTokens);
+				ParseTree testTree = testParser.componentDeclaration();
+				
+				ParseTreeWalker testWalker = new ParseTreeWalker();
+				ExtractFunctionCallTool testListener = new ExtractFunctionCallTool(fileInfo);
+				
+				testWalker.walk(testListener,testTree);
+				
 				
 			}catch (IOException e) {
 	            // TODO Auto-generated catch block
