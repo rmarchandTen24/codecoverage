@@ -5,8 +5,9 @@ import java.util.*;
 
 
 public class CFCodeCoverageChecker {
+	//FileInfo b1= new FileInfo();
 	
-	List<FileInfo> fileInfos;
+	List<FileInfo> fileInfos;static int count =0;
 	
 	static FileInfoService fileInfoService = ServiceFactory.getFileInfoService();
 	
@@ -34,15 +35,14 @@ public class CFCodeCoverageChecker {
 		//STEP 3: check for equivalent test files in /meta/tests/unit{{file.path}}/{{file.filename}}
 		fileInfos = fileInfoService.populateFunctionsOnFileInfo(fileInfos);
 		System.out.println("test");
-		
-		
-//		System.out.println(testPath2);
-//		List<FileInfo> testFilesInfo;
-//		testFilesInfo= fileInfoService.getFileInfosByModelPath(testPath2, true);
-//		System.out.println(""+testFilesInfo);
-		//Store in an array of testfiles with keys filename and path as well.
-		
-		//STEP 4: parse test files and verify function is being tested
+		ExtractFunctionTool b1= new ExtractFunctionTool();
+		int totalFunctions=b1.totalNumberOfFunction;
+		System.out.println("Total number of functions in all the parsed files= "+totalFunctions);
+		FileInfo b2= new FileInfo();
+		int totalMatches=b2.totalNumberOfMatchesInAllFiles;
+		System.out.println("Total number of tested functions in all the files= "+totalMatches);
+		int totalCoverage= (totalMatches*100)/totalFunctions;
+		System.out.println("Total percentage of coverage we have for Slatwall is= "+totalCoverage+"%");
 		
 	}
 }
