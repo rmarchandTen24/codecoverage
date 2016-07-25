@@ -2,6 +2,7 @@ package codecoverage;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -47,8 +48,7 @@ public class FileInfoService{
 				
 				
 		        parser.removeErrorListeners();
-		        //parser.addErrorListener(new error()); // add ours
-		      //  parser.prog(); // parse as usual
+		     
 
 				ParseTreeWalker walker = new ParseTreeWalker();
 				
@@ -85,6 +85,24 @@ public class FileInfoService{
 				//fileInfo.getReportOfTestedFunction();
 				else
 				{
+					File fk = new File("/Users/ten24user/git/codecoverage/htmlOutput.html");
+					   
+			        BufferedWriter bw = new BufferedWriter(new FileWriter(fk,true));
+			       // bw.write("\n\nTest file not found. Hence percentage of coverage is zero.");
+			      //  bw.write("\n\n<----------------------------------------------------------------------------------------->");
+			        bw.write("<tr>");
+			        
+			        bw.write("<td>"+fileInfo.file.getName()+"</td>");
+			        bw.write("<td>"+Boolean.toString(fileInfo.testFile.exists())+"</td>");
+			        bw.write("<td>"+"0"+"</td>");
+			        bw.write("<td>"+"0"+"</td>");
+			        bw.write("<td>"+"0"+"</td>");
+			        
+			        bw.write("<td>"+"0"+"</td>");
+			       
+			        bw.write("</tr>");
+			   //     bw.write("</table>");
+			        bw.close();
 					System.out.println("Test file not found. Hence percentage of coverage is zero.");
 				} 
 				
@@ -104,10 +122,12 @@ public class FileInfoService{
 		for (int i = 0; i < modelFolders.length; i++) {
 			
 	      if (modelFolders[i].isFile()) {
-	       
-	        //if we hit a file than we can inspect and create some fileinfo
-	        FileInfo fileInfo = this.getFileInfoByFile(modelFolders[i]);
-	        fileInfos.add(fileInfo);
+	        if(modelFolders[i].getName().indexOf(".cfm") >= 0 || modelFolders[i].getName().indexOf(".cfc") >= 0 ){
+	        	//if we hit a file than we can inspect and create some fileinfo
+		        FileInfo fileInfo = this.getFileInfoByFile(modelFolders[i]);
+		        fileInfos.add(fileInfo);
+	        }
+	        
 	      } else if (modelFolders[i].isDirectory()) {
 	        //if we are in a folder than recurse til we hit a file
 	    	

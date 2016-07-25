@@ -2,11 +2,11 @@ package codecoverage;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 public class ExtractFunctionCallTool extends CFSCRIPTParserBaseListener {
 	FileInfo fileInfo;
-	
 	
 	
 	ExtractFunctionCallTool(FileInfo _fileInfo){
@@ -14,24 +14,23 @@ public class ExtractFunctionCallTool extends CFSCRIPTParserBaseListener {
 	}
 	
 	
-	
 	@Override
 	public void enterFunctionCall(CFSCRIPTParser.FunctionCallContext ctx) {
-		System.out.println(ctx.getText());
-		String testFunctionBeingCalled = ctx.getText().split("(")[0];
-		if(this.fileInfo.functions.indexOf(testFunctionBeingCalled) >= 0){
-			System.out.println("foundFunctionBeingTested");
-			//increment functions tested
-			this.fileInfo.functionsTested++;
-			
-		}
+		String value="";
+		String testFunctionBeingCalled = ctx.getText();
+		value = testFunctionBeingCalled.split(Pattern.quote("("))[0];
 		
-		System.out.println("test");
+		//System.out.println(""+counterChamp);
+		fileInfo.callfunctionNames.add(value);
+		//System.out.println(fileInfo.callfunctionNames);
+		//String splited[]= testFunctionBeingCalled.split("(");
+		//System.out.println(splited[1]);
+			//fileInfo.callfunctionNames.add(testFunctionBeingCalled);
 		
-		//functionNames.add(ctx.identifier().getText());
-		
+//		if(callfunctionNames.size()>0)
+//		System.out.println("It has functions");
+		//System.out.println(callfunctionNames	
+
+	  }
 	}
 	
-	
-	
-}
