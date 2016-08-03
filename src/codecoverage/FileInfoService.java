@@ -28,7 +28,7 @@ public class FileInfoService{
 		return fileInfo;
 	}
 	
-	
+	int totalFunctions=0; int finalTotalFunctions=0; int finalMatchedFunctions=0;
 	
 	public List<FileInfo> populateFunctionsOnFileInfo(List<FileInfo> fileInfos){
 		//iterate over the fileInfo objects and parse the files to get functions
@@ -55,9 +55,12 @@ public class FileInfoService{
 				ExtractFunctionTool listener = new ExtractFunctionTool();
 				
 				walker.walk(listener,tree);
-				
+				totalFunctions= listener.totalNumberOfFunction;
+				//last=totalFunctions;
+				finalTotalFunctions=finalTotalFunctions+totalFunctions;
+		//		 System.out.println("\nThis is the value you need to experiment with="+totalFunctions+" last="+finalTotalFunctions);
 				fileInfo.functions = listener.functionNames;
-				
+		//		System.out.println("function name= "+fileInfo.functions.toString());
 				fileInfo.populateTestFile();
 				//check if functions are being testing in test files
 				if(fileInfo.testFile.exists()){
@@ -81,11 +84,13 @@ public class FileInfoService{
 				
 				testWalker.walk(testListener,testTree);
 				fileInfo.getReportOfTestedFunction();
+				finalMatchedFunctions=finalMatchedFunctions+fileInfo.totalNumberOfMatchesInAllFiles;
+				System.out.println("This value="+finalMatchedFunctions);
 				}
 				//fileInfo.getReportOfTestedFunction();
 				else
 				{
-					File fk = new File("/Users/ten24user/git/codecoverage/htmlOutput.html");
+					File fk = new File("htmlOutput.html");
 					   
 			        BufferedWriter bw = new BufferedWriter(new FileWriter(fk,true));
 			       // bw.write("\n\nTest file not found. Hence percentage of coverage is zero.");
@@ -98,7 +103,7 @@ public class FileInfoService{
 			        bw.write("<td>"+"0"+"</td>");
 			        bw.write("<td>"+"0"+"</td>");
 			        
-			        bw.write("<td>"+"0"+"</td>");
+			        bw.write("<td>"+"0%"+"</td>");
 			       
 			        bw.write("</tr>");
 			   //     bw.write("</table>");
@@ -165,5 +170,68 @@ public class FileInfoService{
 		}
 		
 		
+	}
+	public void getCompleteOverallReportOfCoverage() throws Exception{
+		File file = new File("htmlOutput.html");
+		
+		   
+        BufferedWriter bbw = new BufferedWriter(new FileWriter(file,true));
+        bbw.write("</table>");
+        bbw.write("<p>"+"OVERALL REPORT FOR CODE COVERAGE"+"</p>");
+       
+       int totalFunctions=0;
+//        //Compilation error not allowed
+// obj = SingletonClass.getSingletonObject();
+  //     FileInfoService fileInfoService = ServiceFactory.getFileInfoService();
+	//	 totalFunctions=fileInfoService.totalNumberOfFunction;
+       // int totalfunctions=ExtractFunctionTool.totalNumberOfFunction;
+		 
+
+	//		ExtractFunctionTool listener = new ExtractFunctionTool();
+	//		totalFunctions= listener.totalNumberOfFunction;
+		// System.out.println("\nThis is the value you need to experiment with="+totalFunctions);
+		System.out.println("\nTotal number of functions in all the parsed files= "+finalTotalFunctions);
+		bbw.write("<p>"+"Total number of functions in all the parsed files= "+ Integer.toString(finalTotalFunctions)+"</p>");
+		
+	
+	//	int totalMatches=FileInfo.totalNumberOfMatchesInAllFiles;
+		
+		System.out.println("Total number of tested functions in all the files= "+finalMatchedFunctions);
+		bbw.write("<p>"+"Total number of tested functions in all the files= "+ Integer.toString(finalMatchedFunctions)+"</p>");
+		
+		int totalCoverage= (finalMatchedFunctions*100)/finalTotalFunctions;
+		
+		System.out.println("\nTotal percentage of coverage we have for Slatwall is= "+totalCoverage+"%");
+		 bbw.write("<p>"+"Total percentage of coverage we have for Slatwall is= "+Integer.toString(totalCoverage)+"%"+"<p>");
+	       
+	
+	        bbw.write("</body>");
+	        bbw.write("</html>");
+
+	        
+	        bbw.close();
+
+	}
+	public void createHtmlFileAndTableHeads() throws Exception{
+
+        File f = new File("htmlOutput.html");
+        BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+       
+        bw.write("<html>");
+        bw.write("<body>");
+        bw.write("<h1>Report For Code Coverage In Slatwall</h1>");
+     
+        bw.write("<table>");
+        bw.write("<thead>");
+        bw.write("<tr>");
+        bw.write("<th>"+"Testing"+"</th>");
+        bw.write("<th>"+"Test File Present"+"</th>");
+        bw.write("<th>"+"Total Declared Function"+"</th>");
+        bw.write("<th>"+"Total number of function calls"+"</th>");
+        bw.write("<th>"+"Total Tested function"+"</th>");
+        bw.write("<th>"+"Total Percentage Of Coverage For This File"+"</th>");
+        bw.write("</tr>");
+        bw.write("</thead>");
+        bw.close();
 	}
 }
